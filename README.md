@@ -1,4 +1,4 @@
-Riddle Custom Landingoages
+Riddle Custom Landingpages
 ==========================
 ## Description
 Riddle is a powerful engagement and lead generation platform - through the 
