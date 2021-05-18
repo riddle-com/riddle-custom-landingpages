@@ -4,9 +4,8 @@ require __DIR__ . '/vendor/autoload.php';
 
 define ('PERCENT_TO_PASS',60);
 define ('DATE_FORMAT', "d.m.Y");
-ini_set('display_errors', 1);
+
 $input = $_POST['data'] ?? null; // Getting your data from Riddle!
-#$input = '{"riddle":{"id":304917,"title":"Zertifikat Demo","type":"quiz"},"lead2":{"FIRST_NAME":{"value":"Philipp","type":"text"},"LAST_NAME":{"value":"M","type":"text"},"LOCALITY":{"value":"SB","type":"text"}},"answers":[{"question":"Frage 1","answer":"Richtig","correct":true,"questionId":1,"answerId":1},{"question":"Frage 2","answer":"Richtig","correct":true,"questionId":2,"answerId":1},{"question":"Frage 3","answer":"Richtig","correct":true,"questionId":3,"answerId":1}],"result":3,"resultData":{"scoreNumber":3,"resultIndex":3,"scorePercentage":100,"scoreText":"Your score: 3/3","title":"","resultId":2},"embed":{"parentLocation":"https://www.riddle.com/showcase/304917/quiz"},"timeTaken":7427}';
 $riddleData = json_decode($input, true);
 
 $title = $riddleData["riddle"]["title"];
@@ -16,8 +15,6 @@ $lastName = $riddleData["lead2"]["LAST_NAME"]["value"];
 $scoreNumber = $riddleData["resultData"]["scoreNumber"];
 $scorePercentage = $riddleData["resultData"]["scorePercentage"];
 $time = $riddleData["timeTaken"];
-
-
 
 $date = date(DATE_FORMAT);
 $totalSeconds = $time / 1000;
@@ -40,9 +37,7 @@ $data = [
     'scoreNumber'       =>  $scoreNumber,
     'date'              =>  $date,
     'logo'              =>  'https://quizu.org/blog/wp-content/uploads/2015/06/Riddle-logo-press-ready.png',
-    #'logo'             =>  'https://www.googlewatchblog.de/wp-content/uploads/google-logo-perfekt.jpg',
 ];
-
 
 if(PERCENT_TO_PASS >= $scorePercentage){
     $html = getContents('html-template-FAILED', $data);
@@ -76,8 +71,6 @@ $mpdf = new \Mpdf\Mpdf([
     'default_font' => 'montserrat',
 ]);
 
-
-
 $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
 $mpdf->WriteHTML($html);
 
@@ -96,8 +89,6 @@ function getContents($template,$data = [])
 {
     $templatePath = 'templates/'.$template.'.php'; // build the template path
 
-    // @todo add check if template/file exists, if not throw error
-
     ob_start(); // start buffer
 
     require $templatePath; // "call" the PHP file / open it
@@ -105,12 +96,10 @@ function getContents($template,$data = [])
     return ob_get_clean(); // get all contents of buffer
 }
 
-
 function loadCSV()
 {   
     $rows = [];
 
-   
     if (($handle = fopen("file.csv", "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
             $rows[] = $data;
@@ -119,12 +108,12 @@ function loadCSV()
         }
         fclose($handle);
  
-    }return $rows;
+    }
+    return $rows;
 }
 
 function updateCSV($data)
 {
-
     $file = fopen("file.csv","w");
     $CSV = loadCSV();
     var_dump($CSV);
@@ -134,10 +123,5 @@ function updateCSV($data)
 
         fputcsv($file, $line);
     }
-    
     fclose($file);
-
 }
-
-
-
